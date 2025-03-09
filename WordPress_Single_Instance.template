@@ -236,7 +236,7 @@
       "Metadata" : {
         "AWS::CloudFormation::Init" : {
           "configSets" : {
-            "wordpress_install" : ["install_cfn", "install_wordpress", "configure_wordpress" ]
+            "wordpress_install" : ["install_cfn","enable_php", "install_wordpress", "configure_wordpress" ]
           },
           "install_cfn" : {
             "files": {
@@ -276,10 +276,7 @@
             "enable_php": {
             "commands": {
               "01_enable_php7_4": {
-              "command": "amazon-linux-extras enable php7.4"
-              },
-              "02_yum_update": {
-              "command": "yum update -y"
+              "command": "amazon-linux-extras install php8.2 -y"
               }
             }
             },
