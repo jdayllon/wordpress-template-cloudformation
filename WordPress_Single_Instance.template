@@ -347,7 +347,7 @@
               },
               "03_configure_wordpress" : {
                 "command" : "/tmp/create-wp-config",
-                "cwd" : "/var/www/html/wordpress"
+                "cwd" : "/var/www/html/"
               }
             }
           }
