@@ -107,9 +107,16 @@ jq --argjson new_amis "$(cat instance-types.json)" '.Mappings.AWSInstanceType2Ar
 jq --arg instance_type "$instance_type" '.Parameters.InstanceType.Default = $instance_type' Wordpress_Single_Instance_updated.json > Wordpress_Single_Instance_updated_default.json
 
 # jq .Mappings.AWSRegionArch2AMI
-jq --argjson new_amis "$(cat amis.json)" '.Mappings.AWSRegionArch2AMI = $new_amis' Wordpress_Single_Instance_updated_default.json > Wordpress_Single_Instance_updated_final.json
+jq --argjson new_amis "$(cat amis.json)" '.Mappings.AWSRegionArch2AMI = $new_amis' Wordpress_Single_Instance_updated_default.json > Wordpress_Single_Instance_updated_final.template
+
+# Replace mysql57 with mariadb
+#                 "mysql57"        : [],
+#                "mysql57-server" : [],
+#                "mysql57-devel"  : [],
+#                "mysql57-libs"   : [],
+sed -i 's/mysql57/mariadb/g' Wordpress_Single_Instance_updated_final.template
 
 echo "Updated CloudFormation template."
 
 echo "Cleaning up..."
-rm instance-types.json instance-types.ndjson instance-types-filtered.ndjson instance-types-filtered-2.ndjson instance-types-array.json instance-types-filtered.json amis.json Wordpress_Single_Instance_updated.json Wordpress_Single_Instance_updated_default.json
+rm -rf *.ndjson *.json
