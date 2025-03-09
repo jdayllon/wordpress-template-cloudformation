@@ -5,6 +5,21 @@ aws ec2 describe-instance-types --query "InstanceTypes[*].[InstanceType,Processo
 
 echo "Instance types saved to instance-types.json"
 
+# Remove large instance types
+jq -c 'to_entries[] | {InstanceType: .key, Arch: .value.Arch}' instance-types.json > instance-types.ndjson
+
+# Remove large instance types
+fgrep "xl" instance-types.ndjson -v > instance-types-filtered.ndjson
+fgrep "metal" instance-types-filtered.ndjson -v > instance-types-filtered-2.ndjson
+
+# Convert back to JSON format
+jq -s 'reduce .[] as $item ({}; .[$item.InstanceType] = {"Arch": $item.Arch})' instance-types-filtered-2.ndjson > instance-types-filtered.json
+
+# Reemplazar el archivo original con la versión filtrada
+mv instance-types-filtered.json instance-types.json
+
+echo "Filtered instance types converted back to JSON format"
+
 # Gets higger "t*.small" instance type
 instance_type=$(jq -r 'keys_unsorted[]' instance-types.json | grep -E '^t.*\.small$' | sort -V | tail -n 1)
 
