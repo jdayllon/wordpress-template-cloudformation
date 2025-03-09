@@ -277,13 +277,13 @@
           "install_wordpress" : {
             "packages" : {
               "yum" : {
-                "php73"          : [],
-                "php73-mysqlnd"  : [],
-                "mysql57"        : [],
-                "mysql57-server" : [],
-                "mysql57-devel"  : [],
-                "mysql57-libs"   : [],
-                "httpd24"        : []
+                "php"          : [],
+                "php-mysqlnd"  : [],
+                "mariadb"        : [],
+                "mariadb-server" : [],
+                "mariadb-devel"  : [],
+                "mariadb-libs"   : [],
+                "httpd"        : []
               }
             },
             "sources" : {

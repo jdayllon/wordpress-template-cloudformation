@@ -114,8 +114,6 @@ jq --argjson new_amis "$(cat amis.json)" '.Mappings.AWSRegionArch2AMI = $new_ami
 #                "mysql57-server" : [],
 #                "mysql57-devel"  : [],
 #                "mysql57-libs"   : [],
-sed -i 's/mysql57/mariadb/g' Wordpress_Single_Instance_updated_final.template
-
 echo "Updated CloudFormation template."
 
 echo "Cleaning up..."
