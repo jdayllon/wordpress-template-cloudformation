@@ -273,6 +273,13 @@
               }
             }
           },
+          "enable_php": {
+            "commands": {
+              "01_enable_php7_4": {
+                "command": "amazon-linux-extras enable php7.4"
+              }
+            }
+          },
 
           "install_wordpress" : {
             "packages" : {
