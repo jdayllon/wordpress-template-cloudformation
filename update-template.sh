@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Remove output template
+rm -rf Wordpress_Single_Instance_updated_final.template
+
 # Gets the available instance types and their supported architectures
 aws ec2 describe-instance-types --query "InstanceTypes[*].[InstanceType,ProcessorInfo.SupportedArchitectures[0]]" --output json | jq -c 'reduce .[] as $item ({}; .[$item[0]] = {"Arch": (if $item[1] == "x86_64" then "HVM64" elif $item[1] == "arm64" then "ARM64" else $item[1] end)})' > instance-types.json
 
