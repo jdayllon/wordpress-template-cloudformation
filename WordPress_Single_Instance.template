@@ -318,7 +318,7 @@
             "services" : {
               "sysvinit" : {
                 "httpd"  : { "enabled" : "true", "ensureRunning" : "true" },
-                "mysqld" : { "enabled" : "true", "ensureRunning" : "true" }
+                "mariadb" : { "enabled" : "true", "ensureRunning" : "true" }
               }
             }
           },
