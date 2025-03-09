@@ -12,6 +12,9 @@ jq -c 'to_entries[] | {InstanceType: .key, Arch: .value.Arch}' instance-types.js
 fgrep "xl" instance-types.ndjson -v > instance-types-filtered.ndjson
 fgrep "metal" instance-types-filtered.ndjson -v > instance-types-filtered-2.ndjson
 
+# Extract the instance types
+jq -s 'map(.InstanceType) | sort' instance-types-filtered-2.ndjson > instance-types-array.json
+
 # Convert back to JSON format
 jq -s 'reduce .[] as $item ({}; .[$item.InstanceType] = {"Arch": $item.Arch})' instance-types-filtered-2.ndjson > instance-types-filtered.json
 
@@ -22,6 +25,12 @@ echo "Filtered instance types converted back to JSON format"
 
 # Gets higger "t*.small" instance type
 instance_type=$(jq -r 'keys_unsorted[]' instance-types.json | grep -E '^t.*\.small$' | sort -V | tail -n 1)
+
+# Replace .Parameters.InstanceType.AllowedValues with the filtered instance types
+jq --argjson instance_types "$(cat instance-types-array.json)" '.Parameters.InstanceType.AllowedValues = $instance_types' WordPress_Single_Instance.template > WordPress_Single_Instance_updated.json
+
+# Replace AllowedTypes with the filtered instance types
+
 
 # AMI ID for different regions and architectures
 # Like : "af-south-1"       : {"HVM64" : "ami-0412806bd0f2cf75f", "HVMG2" : "NOT_SUPPORTED"},
@@ -91,7 +100,7 @@ echo "AMIs saved to amis.json with all available platforms"
 echo "Updating CloudFormation template..."
 # Replace the AMI ID in the CloudFormation template
 # Current info is in jq .Mappings.AWSInstanceType2Arch
-jq --argjson new_amis "$(cat instance-types.json)" '.Mappings.AWSInstanceType2Arch = $new_amis' WordPress_Single_Instance.template > Wordpress_Single_Instance_updated.json
+jq --argjson new_amis "$(cat instance-types.json)" '.Mappings.AWSInstanceType2Arch = $new_amis' WordPress_Single_Instance_updated.json > Wordpress_Single_Instance_updated.json
 
 # Replace default instance type with the higher "t*.small" instance type
 # jq .Parameters.InstanceType.Default
