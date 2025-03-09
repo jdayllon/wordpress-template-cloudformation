@@ -18,6 +18,8 @@ regions=$(aws ec2 describe-regions --query "Regions[*].RegionName" --output text
 # Initialize JSON
 echo "{" > amis.json
 
+echo "Processing regions..."
+
 # Process each region
 for region in $regions; do
   echo "Processing region: $region"
@@ -57,12 +59,16 @@ for region in $regions; do
     fi
   done
   
+  echo "Completed region: $region"
+
   # Add to JSON (with comma except for last region)
   echo "  \"$region\": {\"HVM64\": \"$hvm64_ami\", \"ARM64\": \"$arm64_ami\", \"HVMG2\": \"$hvmg2_ami\", \"PV\": \"$pv_ami\"}," >> amis.json
 done
 
+echo "Completed processing regions."
+
 # Remove the last comma and close JSON
-sed -i '' -e '$ s/,$//' amis.json
+sed -i '$ s/.$//' amis.json
 echo "}" >> amis.json
 
 echo "AMIs saved to amis.json with all available platforms"
