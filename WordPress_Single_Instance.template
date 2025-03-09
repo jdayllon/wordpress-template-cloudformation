@@ -273,13 +273,16 @@
               }
             }
           },
-          "enable_php": {
+            "enable_php": {
             "commands": {
               "01_enable_php7_4": {
-                "command": "amazon-linux-extras enable php7.4"
+              "command": "amazon-linux-extras enable php7.4"
+              },
+              "02_yum_update": {
+              "command": "yum update -y"
               }
             }
-          },
+            },
 
           "install_wordpress" : {
             "packages" : {
@@ -293,8 +296,13 @@
                 "httpd"        : []
               }
             },
-            "sources" : {
-              "/var/www/html" : "http://wordpress.org/latest.tar.gz"
+            "commands": {
+              "download_wordpress": {
+              "command": "curl -L http://wordpress.org/latest.tar.gz -o /tmp/latest.tar.gz"
+              },
+              "extract_wordpress": {
+              "command": "tar --strip-components=1 -xzf /tmp/latest.tar.gz -C /var/www/html"
+              }
             },
             "files" : {
               "/tmp/setup.mysql" : {
@@ -312,7 +320,7 @@
               "/tmp/create-wp-config" : {
                 "content" : { "Fn::Join" : [ "", [
                   "#!/bin/bash -xe\n",
-                  "cp /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php\n",
+                  "cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php\n",
                   "sed -i \"s/'database_name_here'/'",{ "Ref" : "DBName" }, "'/g\" wp-config.php\n",
                   "sed -i \"s/'username_here'/'",{ "Ref" : "DBUser" }, "'/g\" wp-config.php\n",
                   "sed -i \"s/'password_here'/'",{ "Ref" : "DBPassword" }, "'/g\" wp-config.php\n"
@@ -380,7 +388,7 @@
 
   "Outputs" : {
     "WebsiteURL" : {
-      "Value" : { "Fn::Join" : ["", ["http://", { "Fn::GetAtt" : [ "WebServer", "PublicDnsName" ]}, "/wordpress" ]]},
+      "Value" : { "Fn::Join" : ["", ["http://", { "Fn::GetAtt" : [ "WebServer", "PublicDnsName" ]}, "/" ]]},
       "Description" : "WordPress Website"
     }
   }
